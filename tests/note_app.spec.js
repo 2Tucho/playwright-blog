@@ -52,9 +52,6 @@ describe("Blog app", () => {
                 await page.locator("#username").fill("mluukkai")
                 await page.locator("#password").fill("salainen")
                 await page.getByRole("button", { name: "Log in" }).click()
-            })
-
-            test("a new blog can be created", async ({ page }) => {
                 await page.getByRole("button", { name: "New Note" }).click()
 
                 await page.locator("#blogTitle").fill("Prueba 1")
@@ -62,23 +59,24 @@ describe("Blog app", () => {
                 await page.locator("#blogUrl").fill("www.pruebaTest.com")
 
                 await page.getByRole("button", { name: "Create" }).click()
+            })
 
+            test("a new blog can be created", async ({ page }) => {
                 await expect(page.getByText("Prueba 1 Yo mismo")).toBeVisible()
             })
 
             test("the new blog can be liked", async ({ page }) => {
-                await page.getByRole("button", { name: "New Note" }).click()
-
-                await page.locator("#blogTitle").fill("Prueba 1")
-                await page.locator("#blogAuthor").fill("Yo mismo")
-                await page.locator("#blogUrl").fill("www.pruebaTest.com")
-
-                await page.getByRole("button", { name: "Create" }).click()
-
                 await page.getByRole("button", { name: "View" }).click()
                 await page.getByRole("button", { name: "Like" }).click()
 
                 await expect(page.getByText("Likes: 1")).toBeVisible()
+            })
+
+            test("the new blog can be deleted", async ({ page }) => {
+                await page.getByRole("button", { name: "View" }).click()
+                await page.getByRole("button", { name: "Remove" }).click()
+
+                await expect(page.getByText("Prueba 1 Yo mismo")).not.toBeVisible()
             })
         })
     })
