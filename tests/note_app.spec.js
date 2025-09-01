@@ -16,6 +16,13 @@ describe("Blog app", () => {
                 password: "salainen"
             }
         })
+        await request.post("http://localhost:3003/api/users", {
+            data: {
+                name: user.name,
+                username: user.username,
+                password: user.password
+            }
+        })
 
         await page.goto("http://localhost:5173")
     })
@@ -77,6 +84,17 @@ describe("Blog app", () => {
                 await page.getByRole("button", { name: "Remove" }).click()
 
                 await expect(page.getByText("Prueba 1 Yo mismo")).not.toBeVisible()
+            })
+
+            test("only the creator can view the delete button", async ({ page }) => {
+                await page.getByRole("button", { name: "logout" }).click()
+
+                await page.locator("#username").fill(user.username)
+                await page.locator("#password").fill(user.password)
+                await page.getByRole("button", { name: "Log in" }).click()
+
+                await page.getByRole("button", { name: "View" }).click()
+                await expect(page.getByText("Remove")).not.toBeVisible()
             })
         })
     })
